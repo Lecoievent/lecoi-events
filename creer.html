@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Créer mon événement – LECOI EVENTS</title>
+<style>
+  :root { --fond:#112250; --carte:#1a2d5e; --texte:#F5F4F0; --or:#E7E2CE; --doux:#BEB7A7; --ligne:rgba(231,226,206,.35); }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { background: var(--fond); color: var(--texte); font-family: Georgia, serif; line-height: 1.6; padding: 24px; padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px)); }
+  main { max-width: 520px; margin: 0 auto; }
+  a.retour { color: var(--or); font-size: .95rem; }
+  h1 { font-weight: 400; color: var(--or); font-size: 2rem; margin: 20px 0 8px; }
+  p.sous { color: var(--doux); margin: 0 0 24px; }
+  label { display: block; margin: 16px 0 6px; color: var(--or); }
+  input, select, textarea {
+    width: 100%; font: inherit; font-size: 1rem; padding: 12px; border-radius: 4px;
+    border: 1px solid var(--ligne); background: var(--carte); color: var(--texte);
+  }
+  textarea { min-height: 80px; }
+  button {
+    width: 100%; margin-top: 28px; font: inherit; font-size: 1.05rem; padding: 14px;
+    border: 0; border-radius: 4px; background: var(--or); color: var(--fond); cursor: pointer;
+  }
+  .note { color: var(--doux); font-size: .9rem; margin-top: 14px; text-align: center; }
+  :focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+</style>
+</head>
+<body>
+<main>
+  <a class="retour" href="index.html">← Retour</a>
+  <h1>Créer mon événement</h1>
+  <p class="sous">Remplissez ces infos, on prépare votre invitation.</p>
+
+  <label for="type">Type d’événement</label>
+  <select id="type">
+    <option>Mariage</option><option>Dot</option><option>Anniversaire</option>
+    <option>Fête d’église</option><option>Conférence</option><option>Autre</option>
+  </select>
+
+  <label for="noms">Prénoms / Nom de l’événement</label>
+  <input id="noms" type="text" placeholder="Ex : Esther et Joël">
+
+  <label for="date">Date et heure</label>
+  <input id="date" type="text" placeholder="Ex : Samedi 20 décembre 2026 à 14h00">
+
+  <label for="lieu">Lieu</label>
+  <input id="lieu" type="text" placeholder="Ex : Salle Le Prestige, Gombe">
+
+  <label for="invites">Nombre d’invités (environ)</label>
+  <input id="invites" type="number" inputmode="numeric" placeholder="Ex : 150">
+
+  <label for="notes">Autre chose à nous dire (dress-code, programme…)</label>
+  <textarea id="notes"></textarea>
+
+  <button id="envoyer">Envoyer ma demande sur WhatsApp</button>
+  <p class="note">Vous serez redirigé vers WhatsApp avec votre message déjà prêt.</p>
+</main>
+
+<script>
+  document.getElementById("envoyer").addEventListener("click", function () {
+    const v = id => document.getElementById(id).value.trim();
+    const texte =
+      "Bonjour LECOI EVENTS, je veux créer une invitation.\n\n" +
+      "Type : " + v("type") + "\n" +
+      "Noms : " + (v("noms") || "-") + "\n" +
+      "Date : " + (v("date") || "-") + "\n" +
+      "Lieu : " + (v("lieu") || "-") + "\n" +
+      "Invités : " + (v("invites") || "-") + "\n" +
+      "Remarques : " + (v("notes") || "-");
+    window.open("https://wa.me/243XXXXXXXXX?text=" + encodeURIComponent(texte), "_blank");
+  });
+</script>
+</body>
+</html>
