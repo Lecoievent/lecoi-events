@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fr"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>LECOI EVENTS · Espace organisateur</title>
+<style>
+:root{--fond:#112250;--f2:#14213D;--texte:#F5F4F0;--or:#FCA311;--doux:#BEB7A7;--trait:#3B507D}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--fond);color:var(--texte);font-family:Georgia,serif;line-height:1.5;padding:20px}
+main{max-width:560px;margin:0 auto}
+h1,h2{font-weight:400;color:var(--or);margin:0 0 12px}
+.card{background:var(--f2);border:1px solid var(--trait);border-radius:4px;padding:16px;margin-bottom:14px}
+input{width:100%;font:inherit;padding:11px;margin:0 0 10px;border-radius:4px;border:1px solid var(--doux);background:transparent;color:var(--texte)}
+button,a.b{font:inherit;font-size:.95rem;padding:10px 14px;border-radius:4px;border:1px solid var(--or);background:transparent;color:var(--texte);cursor:pointer;text-decoration:none;display:inline-block;margin:4px 4px 0 0}
+.p{background:var(--or);color:var(--fond)}
+.m{color:var(--doux);font-size:.9rem}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.st{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center}.st b{display:block;color:var(--or);font-size:1.5rem;font-weight:400}
+.ok{color:var(--or)}[hidden]{display:none!important}#msg{color:var(--or);min-height:1.5em}
+:focus-visible{outline:3px solid #fff;outline-offset:2px}
+</style></head><body><main>
+<div class="top"><strong style="color:var(--or);letter-spacing:.15em">LECOI EVENTS</strong><button id="quit" hidden>Déconnexion</button></div>
+<p id="msg" aria-live="polite"></p>
+
+<section id="auth" hidden><div class="card"><h2>Espace organisateur</h2>
+<input id="email" type="email" placeholder="Votre e-mail" autocomplete="email">
+<input id="mdp" type="password" placeholder="Mot de passe (8 caractères min.)" autocomplete="current-password">
+<button class="p" id="login">Se connecter</button><button id="signup">Créer un compte</button></div></section>
+
+<section id="home" hidden>
+<div class="card"><h2>Nouvel événement</h2>
+<input id="titre" placeholder="Titre (ex : Mariage Esther & Joël)">
+<input id="datetxt" placeholder="Date et heure (ex : Samedi 20 décembre 2026 à 14h00)">
+<input id="lieu" placeholder="Lieu (ex : Salle Le Prestige, Gombe)">
+<button class="p" id="creer">Créer l’événement</button></div>
+<h2>Mes événements</h2><div id="liste"></div></section>
+
+<section id="event" hidden>
+<button id="retour">← Mes événements</button>
+<div class="card"><h2 id="evtitre"></h2><div class="m" id="evinfo"></div></div>
+<div class="card st" id="stats"></div>
+<div class="card"><h2>Ajouter un invité</h2>
+<input id="gnom" placeholder="Nom de l’invité"><input id="gtel" type="tel" placeholder="WhatsApp (ex : 0812345678)">
+<button class="p" id="gadd">Ajouter</button></div>
+<div id="invites"></div></section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+const sb=supabase.createClient("https://buocoulyutlxgmisxdxl.supabase.co","sb_publishable_s9y0BEltHifWUDUm8i9j3g_7zBgC9As");
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const msg=t=>{$("msg").textContent=t||""};
+let ev=null;
+function show(v){["auth","home","event"].forEach(x=>$(x).hidden=x!==v);$("quit").hidden=v==="auth"}
+
+async function init(){
+  const{data}=await sb.auth.getSession();
+  if(!data.session){show("auth");return}
+  await scanHash();await accueil();
+}
+async function scanHash(){
+  const m=location.hash.match(/^#present=([0-9a-f-]{36})$/i);if(!m)return;
+  history.replaceState(null,"",location.pathname);
+  const{data,error}=await sb.from("guests").update({present:true}).eq("token",m[1]).select("nom");
+  msg(error||!data.length?"QR code non reconnu (ou pas votre événement).":"✓ "+data[0].nom+" est marqué(e) présent(e).");
+}
+async function auth(inscrire){
+  const email=$("email").value.trim(),password=$("mdp").value;
+  if(!email||password.length<8){msg("E-mail et mot de passe (8 caractères min.) requis.");return}
+  const r=inscrire?await sb.auth.signUp({email,password}):await sb.auth.signInWithPassword({email,password});
+  if(r.error){msg("Erreur : "+r.error.message);return}
+  if(!r.data.session){msg("Compte créé. Confirmez votre e-mail, puis connectez-vous.");return}
+  msg("");await accueil();
+}
+async function accueil(){
+  show("home");
+  const{data,error}=await sb.from("events").select("*").order("created_at",{ascending:false});
+  if(error){msg("Erreur de chargement.");return}
+  $("liste").innerHTML=data.length?data.map(e=>`<div class="card"><strong>${esc(e.titre)}</strong><div class="m">${esc(e.date_txt)} · ${esc(e.lieu)}</div><button class="p" data-id="${e.id}">Ouvrir</button></div>`).join(""):'<p class="m">Aucun événement. Créez le premier ci-dessus.</p>';
+  $("liste").querySelectorAll("button").forEach(b=>b.onclick=()=>ouvrir(data.find(e=>e.id===b.dataset.id)));
+}
+async function creer(){
+  const titre=$("titre").value.trim(),date_txt=$("datetxt").value.trim(),lieu=$("lieu").value.trim();
+  if(!titre||!date_txt||!lieu){msg("Remplissez les 3 champs.");return}
+  const{error}=await sb.from("events").insert({titre,date_txt,lieu});
+  if(error){msg("Erreur : "+error.message);return}
+  ["titre","datetxt","lieu"].forEach(i=>$(i).value="");msg("Événement créé ✓");accueil();
+}
+async function ouvrir(e){
+  ev=e;show("event");msg("");
+  $("evtitre").textContent=e.titre;$("evinfo").textContent=e.date_txt+" · "+e.lieu;
+  const{data,error}=await sb.from("guests").select("*").eq("event_id",e.id).order("created_at");
+  if(error){msg("Erreur de chargement.");return}
+  const n=s=>data.filter(g=>g.statut===s).length;
+  $("stats").innerHTML=[["Invités",data.length],["Oui",n("oui")],["Non",n("non")],["Présents",data.filter(g=>g.present).length]].map(([a,b])=>`<div><b>${b}</b><span class="m">${a}</span></div>`).join("");
+  $("invites").innerHTML=data.map(g=>{
+    const lien=location.origin+"/inv.html?t="+g.token;
+    const tel=(g.tel||"").replace(/\D/g,"").replace(/^0/,"243");
+    const txt=encodeURIComponent("Bonjour "+g.nom+", vous êtes invité(e) : "+ev.titre+". Confirmez votre présence ici : "+lien);
+    const wa=tel?`https://wa.me/${tel}?text=${txt}`:`https://wa.me/?text=${txt}`;
+    const s=g.statut==="oui"?"✓ Vient":g.statut==="non"?"✕ Ne vient pas":"… En attente";
+    return `<div class="card"><strong>${esc(g.nom)}</strong> <span class="m">${esc(g.tel||"")}</span>
+    <div class="${g.statut==="oui"?"ok":"m"}">${s}${g.present?" · 🟢 Présent":""}</div>
+    <a class="b p" href="${wa}" target="_blank" rel="noopener">WhatsApp</a>
+    <button data-c="${lien}">Copier le lien</button>
+    <button data-p="${g.id}" data-v="${g.present}">${g.present?"Annuler présence":"Marquer présent"}</button>
+    <button data-d="${g.id}">Supprimer</button></div>`}).join("")||'<p class="m">Aucun invité pour l’instant.</p>';
+  $("invites").querySelectorAll("[data-c]").forEach(b=>b.onclick=async()=>{try{await navigator.clipboard.writeText(b.dataset.c);msg("Lien copié ✓")}catch(_){msg(b.dataset.c)}});
+  $("invites").querySelectorAll("[data-p]").forEach(b=>b.onclick=async()=>{await sb.from("guests").update({present:b.dataset.v!=="true"}).eq("id",b.dataset.p);ouvrir(ev)});
+  $("invites").querySelectorAll("[data-d]").forEach(b=>b.onclick=async()=>{if(confirm("Supprimer cet invité ?")){await sb.from("guests").delete().eq("id",b.dataset.d);ouvrir(ev)}});
+}
+async function ajouter(){
+  const nom=$("gnom").value.trim(),tel=$("gtel").value.trim();
+  if(nom.length<2){msg("Écrivez le nom de l’invité.");return}
+  const{error}=await sb.from("guests").insert({event_id:ev.id,nom,tel});
+  if(error){msg("Erreur : "+error.message);return}
+  $("gnom").value="";$("gtel").value="";ouvrir(ev);
+}
+$("login").onclick=()=>auth(false);$("signup").onclick=()=>auth(true);
+$("creer").onclick=creer;$("gadd").onclick=ajouter;$("retour").onclick=accueil;
+$("quit").onclick=async()=>{await sb.auth.signOut();msg("");show("auth")};
+init();
+</script></body></html>
