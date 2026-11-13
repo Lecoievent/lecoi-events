@@ -3,214 +3,121 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Créer mon événement – LECOI EVENTS</title>
+<title>Créer mon invitation – LECOI EVENTS</title>
 <style>
-  :root { --fond:#112250; --carte:#1a2d5e; --texte:#F5F4F0; --or:#E7E2CE; --doux:#BEB7A7; --ligne:rgba(231,226,206,.35); --erreur:#f2b8b5; }
+  :root { --fond:#F5F4F0; --texte:#112250; --saphir:#3B507D; --champagne:#E7E2CE; --taupe:#BEB7A7; --erreur:#b3261e; }
   * { box-sizing: border-box; }
   html, body { margin: 0; }
-  body { background: var(--fond); color: var(--texte); font-family: Georgia, serif; line-height: 1.6; padding: 24px; padding-bottom: calc(40px + env(safe-area-inset-bottom, 0px)); }
-  main { max-width: 560px; margin: 0 auto; }
-  a.retour { color: var(--or); font-size: .95rem; }
-  h1 { font-weight: 400; color: var(--or); font-size: 2rem; margin: 20px 0 8px; }
-  h2 { font-weight: 400; color: var(--or); font-size: 1.4rem; margin: 36px 0 12px; border-bottom: 1px solid var(--ligne); padding-bottom: 8px; }
-  p.sous { color: var(--doux); margin: 0 0 8px; }
-  label { display: block; margin: 16px 0 6px; color: var(--or); }
-  .facultatif { color: var(--doux); font-size: .85rem; }
-  input, select, textarea {
+  body { background: var(--fond); color: var(--texte); font-family: Georgia, serif; line-height: 1.6; padding: 20px; padding-bottom: calc(48px + env(safe-area-inset-bottom, 0px)); }
+  main { max-width: 540px; margin: 0 auto; }
+  a.retour { color: var(--saphir); font-size: .95rem; }
+  h1 { font-weight: 400; font-size: 2rem; margin: 16px 0 6px; line-height: 1.2; }
+  h2 { font-weight: 400; font-size: 1.35rem; margin: 36px 0 12px; padding-bottom: 8px; border-bottom: 1px solid var(--taupe); }
+  p.aide { color: var(--saphir); margin: 0 0 12px; }
+  .etoile { color: var(--erreur); }
+  label.champ { display: block; margin: 16px 0 6px; font-weight: bold; font-size: .95rem; }
+  .indice { display: block; font-weight: normal; color: var(--saphir); font-size: .85rem; }
+  input[type=text], input[type=tel], input[type=date], input[type=time], textarea {
     width: 100%; font: inherit; font-size: 1rem; padding: 12px; border-radius: 4px;
-    border: 1px solid var(--ligne); background: var(--carte); color: var(--texte);
-  }
-  input[type="date"] { color-scheme: dark; }
-  .astuce { background: rgba(231,226,206,.08); border: 1px solid var(--ligne); border-radius: 4px; padding: 12px 14px; color: var(--doux); font-size: .92rem; margin: 12px 0; }
-  .invite { background: var(--carte); border: 1px solid var(--ligne); border-radius: 4px; padding: 14px; margin-bottom: 12px; }
-  .invite .haut { display: flex; justify-content: space-between; align-items: center; color: var(--or); margin-bottom: 4px; }
-  .invite .grille { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .invite .plein { grid-column: 1 / -1; }
-  .invite label { margin: 8px 0 4px; font-size: .85rem; color: var(--doux); }
-  .invite input, .invite select { background: var(--fond); padding: 10px; }
-  button, .bouton-fichier {
-    font: inherit; font-size: 1rem; padding: 12px 16px; border-radius: 4px; cursor: pointer;
-    border: 1px solid var(--or); background: transparent; color: var(--texte); display: inline-block;
-  }
-  button.suppr { padding: 4px 10px; font-size: .9rem; }
-  button.plein-btn { width: 100%; background: var(--or); color: var(--fond); border: 0; margin-top: 28px; padding: 14px; font-size: 1.05rem; }
-  .barre { display: flex; flex-wrap: wrap; gap: 10px; margin: 8px 0; }
-  #fichier { display: none; }
-  .modeles { display: grid; grid-template-columns: 1fr; gap: 10px; }
-  .modele { display: block; border: 1px solid var(--ligne); border-radius: 4px; padding: 14px; background: var(--carte); cursor: pointer; margin: 0; color: var(--texte); }
-  .modele input { width: auto; margin-right: 10px; }
-  .modele small { display: block; color: var(--doux); margin-left: 28px; }
-  .modele:has(input:checked) { border-color: var(--or); box-shadow: 0 0 0 1px var(--or); }
-  #erreur { color: var(--erreur); margin-top: 14px; min-height: 1.5em; }
-  .note { color: var(--doux); font-size: .9rem; margin-top: 14px; text-align: center; }
-  :focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+    border: 1px solid var(--taupe); background: #fff; color: var(--texte); }
+  textarea { min-height: 110px; }
+  #invites { min-height: 160px; }
+  .deux { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .invalide { border-color: var(--erreur) !important; box-shadow: 0 0 0 2px rgba(179,38,30,.25); }
+  .msg { color: var(--erreur); font-size: .88rem; margin: 4px 0 0; min-height: 1.1em; }
+
+  #apercu { --a-fond:#112250; --a-texte:#F5F4F0; --a-accent:#E7E2CE;
+    background: var(--a-fond); color: var(--a-texte); border: 1px solid var(--a-accent);
+    border-radius: 6px; text-align: center; padding: 22px 16px; margin: 18px 0 8px;
+    outline: 1px solid var(--taupe); outline-offset: 5px; }
+  #apercu .type { font-style: italic; opacity: .8; font-size: .9rem; margin: 0 0 6px; }
+  #apercu h3 { margin: 0 0 10px; font-weight: 400; font-size: 1.6rem; color: var(--a-accent); line-height: 1.2; }
+  #apercu p { margin: 2px 0; font-size: .95rem; }
+  #apercu .accent { color: var(--a-accent); }
+  .legende { text-align: center; color: var(--saphir); font-size: .85rem; margin: 6px 0 0; }
+
+  .choix { display: grid; gap: 10px; }
+  .choix.deux-col { grid-template-columns: 1fr 1fr; }
+  .choix label { display: block; cursor: pointer; margin: 0; }
+  .choix input { position: absolute; opacity: 0; pointer-events: none; }
+  .choix .carte { display: flex; align-items: center; justify-content: center; gap: 12px; text-align: center;
+    border: 1px solid var(--taupe); background: #fff; border-radius: 6px; padding: 16px 10px; }
+  .choix.liste .carte { justify-content: flex-start; padding: 12px 14px; }
+  .choix input:checked + .carte { border-color: var(--texte); box-shadow: 0 0 0 2px var(--texte); background: var(--champagne); }
+  .choix input:focus-visible + .carte { outline: 3px solid var(--saphir); outline-offset: 2px; }
+  .pastille { width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--texte); flex: none; }
+
+  .compte { color: var(--saphir); margin: 6px 0 0; }
+  button.envoyer { width: 100%; margin-top: 32px; font: inherit; font-size: 1.1rem; padding: 16px; border: 0; border-radius: 4px; background: var(--texte); color: var(--fond); cursor: pointer; }
+  #erreur { color: var(--erreur); margin-top: 14px; min-height: 1.4em; font-weight: bold; }
+  .note { color: var(--saphir); font-size: .9rem; text-align: center; margin-top: 12px; }
+  :focus-visible { outline: 3px solid var(--saphir); outline-offset: 2px; }
 </style>
 </head>
 <body>
 <main>
   <a class="retour" href="index.html">← Retour</a>
-  <h1>Créer mon événement</h1>
-  <p class="sous">Remplissez les détails, ajoutez vos invités et choisissez un modèle. On prépare votre invitation.</p>
+  <h1>Créer mon invitation</h1>
+  <p class="aide">Toutes les informations sont nécessaires (<span class="etoile">*</span>) pour préparer votre invitation. Elle se dessine en direct ci-dessous.</p>
 
-  <h2>Détails de l’événement</h2>
+  <div id="apercu" aria-live="polite">
+    <p class="type" id="p-type">Mariage</p>
+    <h3 id="p-titre">Le titre de votre événement</h3>
+    <p id="p-date">Date et heure</p>
+    <p id="p-lieu">Lieu</p>
+    <p id="p-dress" class="accent"></p>
+  </div>
+  <p class="legende">Aperçu de votre invitation</p>
 
-  <label for="nom">Votre nom</label>
-  <input id="nom" type="text" placeholder="ex. Jean Mukendi">
-
-  <label for="contact">Votre numéro WhatsApp</label>
-  <input id="contact" type="tel" inputmode="tel" placeholder="ex. +243 812 345 678">
-
-  <label for="titre">Titre de l’événement</label>
-  <input id="titre" type="text" placeholder="ex. Mariage de Jean et Marie">
-
-  <label for="lieu">Où se déroulera l’événement ?</label>
-  <input id="lieu" type="text" placeholder="ex. Salle Le Prestige, Gombe, Kinshasa">
-
-  <label for="date">Date</label>
-  <input id="date" type="date">
-
-  <label for="heure">Heure <span class="facultatif">(facultatif)</span></label>
-  <input id="heure" type="time">
-
-  <label for="dress">Code vestimentaire <span class="facultatif">(facultatif)</span></label>
-  <input id="dress" type="text" placeholder="ex. Bleu marine et champagne">
-
-  <label for="rsvp">Date limite de RSVP <span class="facultatif">(facultatif)</span></label>
-  <input id="rsvp" type="date">
-
-  <h2>Invités de l’événement</h2>
-  <div class="astuce">Ajoutez vos invités un par un, ou importez un fichier CSV. Maximum 1 000 invités. <strong>Invités ajoutés : <span id="compteur">0</span></strong></div>
-
-  <div id="liste"></div>
-  <datalist id="cats"><option>Famille</option><option>Amis</option><option>Collègues</option><option>VIP</option><option>Église</option><option>Autre</option></datalist>
-
-  <div class="barre">
-    <button type="button" id="ajouter">+ Ajouter un invité</button>
+  <h2>1. Quel événement ? <span class="etoile">*</span></h2>
+  <div class="choix deux-col">
+    <label><input type="radio" name="type" value="Mariage" checked><span class="carte">💍 Mariage</span></label>
+    <label><input type="radio" name="type" value="Dot"><span class="carte">🌿 Dot</span></label>
+    <label><input type="radio" name="type" value="Anniversaire"><span class="carte">🎂 Anniversaire</span></label>
+    <label><input type="radio" name="type" value="Fête d’église"><span class="carte">⛪ Fête d’église</span></label>
+    <label><input type="radio" name="type" value="Conférence"><span class="carte">🎤 Conférence</span></label>
+    <label><input type="radio" name="type" value="Autre"><span class="carte">✨ Autre</span></label>
   </div>
 
-  <h2>Importer des invités (CSV)</h2>
-  <div class="astuce">Votre fichier doit avoir exactement ces colonnes : <strong>name, category, seat, ticket</strong>. Pour <em>ticket</em>, écrivez <em>single</em> ou <em>couple</em>. Une erreur dans les colonnes peut donner des données manquantes.</div>
-  <div class="barre">
-    <label for="fichier" class="bouton-fichier" style="margin:0;color:var(--texte)">Importer un CSV</label>
-    <input id="fichier" type="file" accept=".csv,text/csv">
+  <h2>2. Les détails</h2>
+  <label class="champ" for="titre">Titre ou prénoms <span class="etoile">*</span></label>
+  <input id="titre" type="text" placeholder="ex. Esther &amp; Joël" data-nom="le titre">
+  <div class="msg" data-pour="titre"></div>
+
+  <div class="deux">
+    <div>
+      <label class="champ" for="date">Date <span class="etoile">*</span></label>
+      <input id="date" type="date" data-nom="la date">
+      <div class="msg" data-pour="date"></div>
+    </div>
+    <div>
+      <label class="champ" for="heure">Heure <span class="etoile">*</span></label>
+      <input id="heure" type="time" data-nom="l’heure">
+      <div class="msg" data-pour="heure"></div>
+    </div>
   </div>
 
-  <h2>Sélectionner un modèle</h2>
-  <div class="modeles">
-    <label class="modele"><input type="radio" name="modele" value="Marine et champagne" checked>Marine &amp; champagne<small>Élégant, idéal pour mariage et dot</small></label>
-    <label class="modele"><input type="radio" name="modele" value="Ivoire classique">Ivoire classique<small>Sobre, pour anniversaire ou fête d’église</small></label>
-    <label class="modele"><input type="radio" name="modele" value="Personnalisé">Modèle personnalisé<small>Contactez-nous pour un modèle créé pour votre événement</small></label>
-  </div>
+  <label class="champ" for="lieu">Nom du lieu <span class="etoile">*</span></label>
+  <input id="lieu" type="text" placeholder="ex. Salle Le Prestige" data-nom="le nom du lieu">
+  <div class="msg" data-pour="lieu"></div>
 
-  <div id="erreur" role="alert"></div>
-  <button type="button" class="plein-btn" id="envoyer">Envoyer ma demande sur WhatsApp</button>
-  <p class="note">Vous serez redirigé vers WhatsApp avec votre message déjà prêt.</p>
-</main>
+  <label class="champ" for="adresse">Adresse (commune, quartier, avenue) <span class="etoile">*</span></label>
+  <input id="adresse" type="text" placeholder="ex. Av. de la Libération, Gombe, Kinshasa" data-nom="l’adresse">
+  <div class="msg" data-pour="adresse"></div>
 
-<script>
-  // ⚠️ Mets ici ton vrai numéro WhatsApp : code pays + numéro sans le 0, sans + ni espaces
-  const NUMERO = "243XXXXXXXXX";
+  <label class="champ" for="dress">Code vestimentaire <span class="etoile">*</span></label>
+  <input id="dress" type="text" placeholder="ex. Tenue de soirée, touche de bleu" data-nom="le code vestimentaire">
+  <div class="msg" data-pour="dress"></div>
 
-  const liste = document.getElementById("liste");
-  const compteur = document.getElementById("compteur");
+  <label class="champ" for="programme">Programme de la journée <span class="etoile">*</span>
+    <span class="indice">Une étape par ligne, ex. « 14h00 Cérémonie » puis « 17h00 Réception »</span></label>
+  <textarea id="programme" placeholder="14h00 Cérémonie&#10;17h00 Réception&#10;20h00 Soirée dansante" data-nom="le programme"></textarea>
+  <div class="msg" data-pour="programme"></div>
 
-  function majCompteur() {
-    compteur.textContent = liste.children.length;
-    Array.from(liste.children).forEach(function (l, i) {
-      l.querySelector(".num").textContent = "Invité " + (i + 1);
-    });
-  }
+  <label class="champ" for="rsvp">Répondre avant le <span class="etoile">*</span></label>
+  <input id="rsvp" type="date" data-nom="la date limite de réponse">
+  <div class="msg" data-pour="rsvp"></div>
 
-  function ajouterInvite(nom, cat, siege, billet) {
-    if (liste.children.length >= 1000) { alert("Maximum 1 000 invités."); return; }
-    const l = document.createElement("div");
-    l.className = "invite";
-    l.innerHTML =
-      '<div class="haut"><span class="num"></span><button type="button" class="suppr">Supprimer</button></div>' +
-      '<div class="grille">' +
-        '<div class="plein"><label>Nom</label><input class="i-nom" type="text"></div>' +
-        '<div><label>Catégorie</label><input class="i-cat" type="text" list="cats"></div>' +
-        '<div><label>Siège ou table</label><input class="i-siege" type="text"></div>' +
-        '<div class="plein"><label>Billet</label><select class="i-billet"><option>Simple</option><option>Couple</option></select></div>' +
-      '</div>';
-    l.querySelector(".i-nom").value = nom || "";
-    l.querySelector(".i-cat").value = cat || "";
-    l.querySelector(".i-siege").value = siege || "";
-    l.querySelector(".i-billet").value = billet || "Simple";
-    l.querySelector(".suppr").addEventListener("click", function () { l.remove(); majCompteur(); });
-    liste.appendChild(l);
-    majCompteur();
-  }
-
-  document.getElementById("ajouter").addEventListener("click", function () { ajouterInvite(); });
-
-  document.getElementById("fichier").addEventListener("change", function (e) {
-    const f = e.target.files[0];
-    if (!f) return;
-    const lecteur = new FileReader();
-    lecteur.onload = function () {
-      const lignes = String(lecteur.result).split(/\r?\n/).filter(function (x) { return x.trim() !== ""; });
-      let ajoutes = 0;
-      lignes.forEach(function (ligne, i) {
-        const sep = ligne.indexOf(";") > -1 ? ";" : ",";
-        const c = ligne.split(sep).map(function (x) { return x.trim().replace(/^"|"$/g, ""); });
-        if (i === 0 && c[0].toLowerCase() === "name") return; // ligne d'en-tête
-        if (!c[0]) return;
-        ajouterInvite(c[0], c[1], c[2], (c[3] || "").toLowerCase() === "couple" ? "Couple" : "Simple");
-        ajoutes++;
-      });
-      alert(ajoutes + " invité(s) importé(s).");
-    };
-    lecteur.readAsText(f);
-    e.target.value = "";
-  });
-
-  function fr(d) {
-    if (!d) return "-";
-    const p = d.split("-");
-    return p[2] + "/" + p[1] + "/" + p[0];
-  }
-
-  document.getElementById("envoyer").addEventListener("click", function () {
-    const v = function (id) { return document.getElementById(id).value.trim(); };
-    const erreur = document.getElementById("erreur");
-    if (!v("nom") || !v("contact") || !v("titre") || !v("lieu") || !v("date")) {
-      erreur.textContent = "Merci de remplir : votre nom, votre WhatsApp, le titre, le lieu et la date.";
-      return;
-    }
-    erreur.textContent = "";
-
-    const modele = document.querySelector('input[name="modele"]:checked').value;
-    const invites = Array.from(liste.children).map(function (l, i) {
-      return (i + 1) + ". " + (l.querySelector(".i-nom").value.trim() || "(sans nom)") +
-        " | " + (l.querySelector(".i-cat").value.trim() || "-") +
-        " | " + (l.querySelector(".i-siege").value.trim() || "-") +
-        " | " + l.querySelector(".i-billet").value;
-    });
-
-    let texte =
-      "Bonjour LECOI EVENTS, je veux créer une invitation.\n\n" +
-      "Mon nom : " + v("nom") + "\n" +
-      "Mon WhatsApp : " + v("contact") + "\n\n" +
-      "Événement : " + v("titre") + "\n" +
-      "Lieu : " + v("lieu") + "\n" +
-      "Date : " + fr(v("date")) + (v("heure") ? " à " + v("heure") : "") + "\n" +
-      "Code vestimentaire : " + (v("dress") || "-") + "\n" +
-      "Date limite RSVP : " + fr(v("rsvp")) + "\n" +
-      "Modèle : " + modele + "\n\n" +
-      "Invités (" + invites.length + ")";
-
-    const avecListe = texte + " (nom | catégorie | siège | billet) :\n" + invites.join("\n");
-    if (invites.length > 0 && encodeURIComponent(avecListe).length < 1800) {
-      texte = avecListe;
-    } else if (invites.length > 0) {
-      texte += " : la liste est longue, je vous l’envoie en fichier juste après.";
-    }
-
-    window.open("https://wa.me/" + NUMERO + "?text=" + encodeURIComponent(texte), "_blank");
-  });
-
-  ajouterInvite();
-</script>
-</body>
-</html>
+  <h2>3. L’ambiance <span class="etoile">*</span></h2>
+  <div class="choix liste">
+    <label><input type="radio" name="amb" value="Marine et champagne" data-fond="#112250" data-texte="#F5F4F0" data-accent="#E7E2CE" checked><span class="carte"><span class="pastille"
