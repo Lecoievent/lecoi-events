@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Invitation</title>
+<style>
+:root{--fond:#112250;--texte:#F5F4F0;--or:#FCA311;--doux:#BEB7A7}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--fond);color:var(--texte);font-family:Georgia,serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center}
+.carte{width:100%;max-width:420px;border:1px solid var(--or);border-radius:4px;padding:36px 22px;outline:1px solid rgba(252,163,17,.35);outline-offset:6px}
+.m{color:var(--doux);font-style:italic}h1{font-size:2.2rem;font-weight:400;color:var(--or);margin:8px 0}
+strong{color:var(--or);font-weight:400}.b{display:flex;flex-direction:column;gap:12px;margin-top:22px}
+button{font:inherit;padding:14px;border-radius:4px;border:1px solid var(--or);background:transparent;color:var(--texte);cursor:pointer}
+.p{background:var(--or);color:var(--fond)}button:disabled{opacity:.6}
+#qr{display:inline-block;background:#fff;padding:12px;border-radius:4px;margin-top:14px}
+#msg{color:var(--or);min-height:1.5em;margin-top:16px}:focus-visible{outline:3px solid #fff;outline-offset:2px}
+</style></head><body>
+<main class="carte" id="c"><p class="m">Chargement…</p></main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+const sb=supabase.createClient("https://buocoulyutlxgmisxdxl.supabase.co","sb_publishable_s9y0BEltHifWUDUm8i9j3g_7zBgC9As");
+const t=new URLSearchParams(location.search).get("t");
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const c=document.getElementById("c");
+async function charger(){
+  const{data,error}=await sb.rpc("get_invitation",{t});
+  if(error||!data||!data.length){c.innerHTML='<p class="m">Invitation introuvable. Vérifiez votre lien.</p>';return}
+  const i=data[0];
+  c.innerHTML=`<p class="m">Cher(e) ${esc(i.nom)}, vous êtes invité(e) à</p><h1>${esc(i.titre)}</h1>
+  <p><strong>${esc(i.date_txt)}</strong><br>${esc(i.lieu)}</p>
+  <a style="color:var(--or)" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(i.lieu)}" target="_blank" rel="noopener">Voir l’itinéraire</a>
+  <div id="zone"></div><p id="msg" aria-live="polite"></p>`;
+  zone(i.statut);
+}
+function zone(s){
+  const z=document.getElementById("zone");
+  if(s==="oui"){
+    z.innerHTML='<p class="m" style="margin-top:22px">Votre présence est confirmée. Présentez ce QR code à l’entrée :</p><div id="qr"></div><div class="b"><button id="non">Finalement je ne viens pas</button></div>';
+    new QRCode(document.getElementById("qr"),{text:location.origin+"/app.html#present="+t,width:200,height:200,colorDark:"#112250",colorLight:"#ffffff"});
+    document.getElementById("non").onclick=()=>rep("non");
+  }else{
+    z.innerHTML=`<p class="m" style="margin-top:22px">${s==="non"?"Vous avez indiqué que vous ne venez pas. Vous pouvez changer d’avis :":"Merci de confirmer votre présence :"}</p><div class="b"><button class="p" id="oui">Je viens</button>${s==="non"?"":'<button id="non">Je ne viens pas</button>'}</div>`;
+    document.getElementById("oui").onclick=()=>rep("oui");
+    const n=document.getElementById("non");if(n)n.onclick=()=>rep("non");
+  }
+}
+async function rep(r){
+  document.querySelectorAll("button").forEach(b=>b.disabled=true);
+  const{error}=await sb.rpc("repondre",{t,r});
+  if(error){document.getElementById("msg").textContent="L’envoi n’a pas marché. Réessayez.";document.querySelectorAll("button").forEach(b=>b.disabled=false);return}
+  if(r==="oui"){zone("oui")}else{document.getElementById("zone").innerHTML='<p class="m" style="margin-top:22px">Merci de nous avoir prévenus. Vous nous manquerez.</p>'}
+}
+charger();
+</script></body></html>
