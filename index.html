@@ -3,13 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Invitation de mariage</title>
+<title>LECOI EVENTS – Invitations numériques à Kinshasa</title>
+<meta name="description" content="Créez des invitations numériques, recevez les confirmations et suivez vos invités depuis votre téléphone.">
 <style>
-  :root {
-    --fond: #2a1740;
-    --texte: #f6ece4;
-    --or: #e6c48f;
-    --doux: #c9b8d8;
+   :root {
+    --fond: #112250;
+    --carte: #1a2d5e;
+    --texte: #F5F4F0;
+    --or: #E7E2CE;
+    --doux: #BEB7A7;
+    --ligne: rgba(231,226,206,.35);
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; }
@@ -17,74 +20,108 @@
     background: var(--fond);
     color: var(--texte);
     font-family: Georgia, "Times New Roman", serif;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 24px;
-    text-align: center;
+    line-height: 1.6;
   }
-  .carte {
-    width: 100%;
-    max-width: 420px;
-    border: 1px solid var(--or);
-    border-radius: 4px;
-    padding: 40px 24px;
-    outline: 1px solid rgba(230,196,143,.35);
-    outline-offset: 6px;
+  .cadre { max-width: 560px; margin: 0 auto; padding: 0 24px; }
+  nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 0; }
+  .logo { color: var(--or); letter-spacing: .22em; font-size: .9rem; }
+  nav a.petit { color: var(--or); font-size: .95rem; }
+  a { color: inherit; }
+  .badge {
+    display: inline-block; border: 1px solid var(--ligne); color: var(--doux);
+    padding: 4px 14px; border-radius: 20px; font-size: .85rem; margin-bottom: 20px;
   }
-  .intro { color: var(--doux); font-style: italic; margin: 0 0 20px; }
-  h1 { font-size: 2.6rem; font-weight: 400; line-height: 1.15; margin: 0; color: var(--or); }
-  .et { font-style: italic; color: var(--doux); margin: 6px 0; font-size: 1.3rem; }
-  .infos { margin: 32px 0; line-height: 1.7; font-size: 1.1rem; }
-  .infos strong { color: var(--or); font-weight: 400; }
-  .boutons { display: flex; flex-direction: column; gap: 12px; }
-  button {
-    font: inherit;
-    font-size: 1.05rem;
-    padding: 14px;
-    border-radius: 4px;
-    border: 1px solid var(--or);
-    cursor: pointer;
-    color: var(--texte);
-    background: transparent;
+  header { text-align: center; padding: 36px 0 28px; }
+  h1 { font-size: 2.4rem; font-weight: 400; line-height: 1.2; color: var(--or); margin: 0 0 16px; }
+  .sous { color: var(--doux); margin: 0 0 28px; }
+  .actions { display: flex; flex-direction: column; gap: 12px; }
+  .btn {
+    display: block; text-align: center; padding: 14px; border-radius: 4px;
+    border: 1px solid var(--or); text-decoration: none; font-size: 1.05rem; color: var(--texte);
   }
-  button.oui { background: var(--or); color: var(--fond); }
-  button:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
-  a.carte-lien { display: block; margin-top: 14px; color: var(--or); text-decoration: underline; }
-  #message { min-height: 3em; margin: 24px 0 0; color: var(--or); font-size: 1.1rem; }
+  .btn.plein { background: var(--or); color: var(--fond); }
+  .pastilles { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 24px; }
+  .pastilles span { font-size: .85rem; color: var(--doux); border: 1px solid var(--ligne); border-radius: 4px; padding: 4px 10px; }
+  section { padding: 36px 0 8px; }
+  .etiquette { text-align: center; color: var(--doux); font-style: italic; margin: 0; }
+  h2 { font-weight: 400; color: var(--or); font-size: 1.6rem; text-align: center; margin: 4px 0 24px; }
+  .etape { display: flex; gap: 16px; background: var(--carte); border: 1px solid var(--ligne); border-radius: 4px; padding: 18px; margin-bottom: 12px; }
+  .num { color: var(--or); font-size: 1.8rem; line-height: 1; }
+  .etape h3 { margin: 0 0 4px; font-weight: 400; color: var(--or); font-size: 1.1rem; }
+  .etape p { margin: 0; color: var(--doux); }
+  .ligne { background: var(--carte); border: 1px solid var(--ligne); border-radius: 4px; padding: 16px 18px; margin-bottom: 12px; }
+  .ligne .avant { color: var(--doux); text-decoration: line-through; display: block; }
+  .ligne .apres { color: var(--or); display: block; margin-top: 4px; }
+  .modeles { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .modele { text-decoration: none; border: 1px solid var(--ligne); border-radius: 4px; overflow: hidden; background: var(--carte); }
+  .modele .vignette { height: 110px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: var(--or); }
+  .v1 { background: linear-gradient(135deg, #3b2160, #1d0f30); }
+  .v2 { background: linear-gradient(135deg, #5a3b2a, #2a1740); }
+  .modele p { margin: 0; padding: 10px 12px; font-size: .95rem; }
+  .modele small { display: block; color: var(--doux); }
+  .final { text-align: center; padding: 40px 0 16px; }
+  .final p { color: var(--doux); }
+  footer { text-align: center; color: var(--doux); font-size: .9rem; padding: 32px 0; padding-bottom: calc(32px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--ligne); margin-top: 32px; }
+  a:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
 </style>
 </head>
 <body>
-  <main class="carte">
-    <p class="intro">Nous avons la joie de vous inviter au mariage de</p>
-    <h1>Esther</h1>
-    <p class="et">et</p>
-    <h1>Joël</h1>
+<div class="cadre">
 
-    <div class="infos">
-      <p><strong>Samedi 20 décembre 2026</strong><br>à 14h00</p>
-      <p><strong>Salle Le Prestige</strong><br>Gombe, Kinshasa</p>
-      <a class="carte-lien" href="https://www.google.com/maps/search/?api=1&query=Gombe+Kinshasa" target="_blank" rel="noopener">Voir l'itinéraire sur Google Maps</a>
+  <nav>
+    <span class="logo">LECOI EVENTS</span>
+    <a class="petit" href="invitation.html">Voir la démo</a>
+  </nav>
+
+  <header>
+    <span class="badge">100 % numérique · Made in Kinshasa</span>
+    <h1>Vos invitations, version moderne.</h1>
+    <p class="sous">Créez une invitation élégante, envoyez-la sur WhatsApp, recevez les confirmations et sachez enfin qui vient. Sans papier, sans courir derrière vos invités.</p>
+    <div class="actions">
+      <a class="btn plein" href="https://wa.me/243XXXXXXXXX?text=Bonjour%20LECOI%20EVENTS%2C%20je%20veux%20cr%C3%A9er%20une%20invitation" target="_blank" rel="noopener">Créer mon invitation</a>
+      <a class="btn" href="invitation.html">Voir un exemple</a>
     </div>
-
-    <div class="boutons">
-      <button class="oui" id="btn-oui">Je viens</button>
-      <button id="btn-non">Je ne viens pas</button>
+    <div class="pastilles">
+      <span>Lien WhatsApp</span><span>Confirmations RSVP</span><span>QR code invité</span>
     </div>
-    <p id="message" aria-live="polite"></p>
-  </main>
+  </header>
 
-  <script>
-    const message = document.getElementById("message");
+  <section>
+    <p class="etiquette">Simple comme bonjour</p>
+    <h2>Comment ça marche</h2>
+    <div class="etape"><span class="num">1</span><div><h3>Créez votre événement</h3><p>Prénoms, date, lieu, programme : on prépare votre page d’invitation.</p></div></div>
+    <div class="etape"><span class="num">2</span><div><h3>Envoyez le lien</h3><p>Partagez-le sur WhatsApp ou par SMS, un lien par invité ou pour tous.</p></div></div>
+    <div class="etape"><span class="num">3</span><div><h3>Suivez les réponses</h3><p>Confirmés, refusés, en attente : tout est clair, et l’entrée se fait avec un QR code.</p></div></div>
+  </section>
 
-    document.getElementById("btn-oui").addEventListener("click", function () {
-      message.textContent = "Merci ! Votre présence est confirmée.";
-    });
+  <section>
+    <p class="etiquette">Fini les tracas</p>
+    <h2>Ce que nous simplifions</h2>
+    <div class="ligne"><span class="avant">Impression et livraison des cartons</span><span class="apres">Un lien, zéro frais d’impression</span></div>
+    <div class="ligne"><span class="avant">Appeler chaque invité pour confirmer</span><span class="apres">Ils répondent d’un clic</span></div>
+    <div class="ligne"><span class="avant">Invitation perdue ou oubliée</span><span class="apres">Il suffit de renvoyer le lien</span></div>
+    <div class="ligne"><span class="avant">Liste papier à l’entrée</span><span class="apres">Scan du QR code, présence validée</span></div>
+  </section>
 
-    document.getElementById("btn-non").addEventListener("click", function () {
-      message.textContent = "Merci de nous avoir prévenus. Vous nous manquerez.";
-    });
-  </script>
+  <section>
+    <p class="etiquette">Votre style</p>
+    <h2>Des modèles élégants</h2>
+    <div class="modeles">
+      <a class="modele" href="invitation.html"><div class="vignette v1">E &amp; J</div><p>Violet &amp; or<small>Mariage</small></p></a>
+      <a class="modele" href="https://wa.me/243XXXXXXXXX?text=Je%20veux%20un%20autre%20mod%C3%A8le" target="_blank" rel="noopener"><div class="vignette v2">Bientôt</div><p>Autres modèles<small>Anniversaire, dot, église</small></p></a>
+    </div>
+  </section>
+
+  <section class="final">
+    <h2>Prêt pour votre événement ?</h2>
+    <p>Écrivez-nous sur WhatsApp, on vous accompagne à chaque étape.</p>
+    <a class="btn plein" href="https://wa.me/243XXXXXXXXX" target="_blank" rel="noopener">Nous contacter sur WhatsApp</a>
+  </section>
+
+  <footer>
+    LECOI EVENTS · Vos événements, notre priorité !<br>Kinshasa, RDC
+  </footer>
+
+</div>
 </body>
 </html>
