@@ -5,130 +5,38 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Créer mon événement – LECOI EVENTS</title>
 <style>
-  :root { --fond:#112250; --carte:#1a2d5e; --texte:#F5F4F0; --or:#E7E2CE; --doux:#BEB7A7; --ligne:rgba(231,226,206,.35); --erreur:#f2b8b5; }
+  :root { --fond:#F5F4F0; --texte:#112250; --saphir:#3B507D; --champagne:#E7E2CE; --taupe:#BEB7A7; --erreur:#9b1c1c; }
   * { box-sizing: border-box; }
   html, body { margin: 0; }
-  body { background: var(--fond); color: var(--texte); font-family: Georgia, serif; line-height: 1.6; padding: 20px; padding-bottom: calc(40px + env(safe-area-inset-bottom, 0px)); }
-  main { max-width: 520px; margin: 0 auto; }
-  .haut { display: flex; justify-content: space-between; align-items: center; font-size: .95rem; }
-  .haut a { color: var(--or); }
-  .haut span { color: var(--doux); }
-  .barre { height: 4px; background: var(--ligne); border-radius: 2px; margin: 14px 0 20px; overflow: hidden; }
-  .barre div { height: 100%; width: 20%; background: var(--or); transition: width .3s; }
+  body { background: var(--fond); color: var(--texte); font-family: Georgia, serif; line-height: 1.6; padding: 20px; padding-bottom: calc(48px + env(safe-area-inset-bottom, 0px)); }
+  main { max-width: 540px; margin: 0 auto; }
+  a.retour { color: var(--saphir); font-size: .95rem; }
+  h1 { font-weight: 400; font-size: 2rem; margin: 16px 0 6px; line-height: 1.2; }
+  h2 { font-weight: 400; font-size: 1.35rem; margin: 36px 0 12px; padding-bottom: 8px; border-bottom: 1px solid var(--taupe); }
+  p.aide { color: var(--saphir); margin: 0 0 12px; }
+  label.champ { display: block; margin: 16px 0 6px; font-weight: bold; font-size: .95rem; }
+  .fac { font-weight: normal; color: var(--saphir); font-size: .85rem; }
+  input[type=text], input[type=tel], input[type=date], input[type=time], textarea {
+    width: 100%; font: inherit; font-size: 1rem; padding: 12px; border-radius: 4px;
+    border: 1px solid var(--taupe); background: #fff; color: var(--texte); }
+  textarea { min-height: 160px; }
+  .deux { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
   /* Aperçu en direct */
   #apercu { --a-fond:#112250; --a-texte:#F5F4F0; --a-accent:#E7E2CE;
     background: var(--a-fond); color: var(--a-texte); border: 1px solid var(--a-accent);
-    border-radius: 6px; text-align: center; padding: 22px 16px; margin-bottom: 24px; outline: 1px solid var(--ligne); outline-offset: 5px; }
+    border-radius: 6px; text-align: center; padding: 22px 16px; margin: 18px 0 8px;
+    outline: 1px solid var(--taupe); outline-offset: 5px; }
   #apercu .type { font-style: italic; opacity: .8; font-size: .9rem; margin: 0 0 6px; }
   #apercu h3 { margin: 0 0 10px; font-weight: 400; font-size: 1.6rem; color: var(--a-accent); line-height: 1.2; }
   #apercu p { margin: 2px 0; font-size: .95rem; }
   #apercu .accent { color: var(--a-accent); }
+  .legende { text-align: center; color: var(--saphir); font-size: .85rem; margin: 6px 0 0; }
 
-  h1 { font-weight: 400; color: var(--or); font-size: 1.7rem; margin: 0 0 6px; line-height: 1.25; }
-  p.aide { color: var(--doux); margin: 0 0 18px; }
-  .etape { display: none; }
-  .etape.actif { display: block; }
-
-  label.champ { display: block; margin: 16px 0 6px; color: var(--or); }
-  .fac { color: var(--doux); font-size: .85rem; }
-  input[type=text], input[type=tel], input[type=date], input[type=time], textarea {
-    width: 100%; font: inherit; font-size: 1rem; padding: 12px; border-radius: 4px;
-    border: 1px solid var(--ligne); background: var(--carte); color: var(--texte); color-scheme: dark; }
-  textarea { min-height: 170px; }
-  .deux { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-
-  .cases { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .case { border: 1px solid var(--ligne); background: var(--carte); color: var(--texte); border-radius: 6px; padding: 18px 8px; font: inherit; font-size: 1rem; cursor: pointer; text-align: center; }
-  .case.choisi { border-color: var(--or); box-shadow: 0 0 0 1px var(--or); color: var(--or); }
-
-  .ambiances { display: grid; gap: 10px; }
-  .amb { display: flex; align-items: center; gap: 14px; border: 1px solid var(--ligne); background: var(--carte); color: var(--texte); border-radius: 6px; padding: 12px 14px; font: inherit; font-size: 1rem; cursor: pointer; text-align: left; }
-  .amb.choisi { border-color: var(--or); box-shadow: 0 0 0 1px var(--or); }
-  .pastille { width: 38px; height: 38px; border-radius: 50%; border: 2px solid var(--or); flex: none; }
-
-  .compte { color: var(--or); margin-top: 8px; }
-  .navigation { display: flex; gap: 12px; margin-top: 26px; }
-  .navigation button { flex: 1; font: inherit; font-size: 1.05rem; padding: 14px; border-radius: 4px; cursor: pointer; border: 1px solid var(--or); background: transparent; color: var(--texte); }
-  .navigation button.principal { background: var(--or); color: var(--fond); border: 0; flex: 2; }
-  #precedent[hidden] { display: none; }
-  #erreur { color: var(--erreur); margin-top: 12px; min-height: 1.4em; }
-  .note { color: var(--doux); font-size: .9rem; text-align: center; margin-top: 12px; }
-  :focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
-</style>
-</head>
-<body>
-<main>
-  <div class="haut"><a href="index.html">← Quitter</a><span id="etat">Étape 1 sur 5</span></div>
-  <div class="barre"><div id="progres"></div></div>
-
-  <!-- Aperçu en direct -->
-  <div id="apercu" aria-live="polite">
-    <p class="type" id="p-type">Votre invitation</p>
-    <h3 id="p-titre">Le titre de votre événement</h3>
-    <p id="p-date">Date et heure</p>
-    <p id="p-lieu">Lieu</p>
-    <p id="p-dress" class="accent"></p>
-  </div>
-
-  <!-- Étape 1 -->
-  <section class="etape actif">
-    <h1>Quel événement organisez-vous ?</h1>
-    <p class="aide">Choisissez celui qui vous ressemble le plus.</p>
-    <div class="cases" id="types">
-      <button type="button" class="case choisi" data-v="Mariage">💍 Mariage</button>
-      <button type="button" class="case" data-v="Dot">🌿 Dot</button>
-      <button type="button" class="case" data-v="Anniversaire">🎂 Anniversaire</button>
-      <button type="button" class="case" data-v="Fête d’église">⛪ Fête d’église</button>
-      <button type="button" class="case" data-v="Conférence">🎤 Conférence</button>
-      <button type="button" class="case" data-v="Autre">✨ Autre</button>
-    </div>
-  </section>
-
-  <!-- Étape 2 -->
-  <section class="etape">
-    <h1>L’essentiel</h1>
-    <p class="aide">Ce que vos invités doivent savoir.</p>
-    <label class="champ" for="titre">Titre ou prénoms</label>
-    <input id="titre" type="text" placeholder="ex. Esther &amp; Joël">
-    <div class="deux">
-      <div><label class="champ" for="date">Date</label><input id="date" type="date"></div>
-      <div><label class="champ" for="heure">Heure <span class="fac">(facultatif)</span></label><input id="heure" type="time"></div>
-    </div>
-    <label class="champ" for="lieu">Lieu</label>
-    <input id="lieu" type="text" placeholder="ex. Salle Le Prestige, Gombe">
-  </section>
-
-  <!-- Étape 3 -->
-  <section class="etape">
-    <h1>Choisissez l’ambiance</h1>
-    <p class="aide">Les couleurs de votre invitation.</p>
-    <div class="ambiances" id="ambiances">
-      <button type="button" class="amb choisi" data-nom="Marine et champagne" data-fond="#112250" data-texte="#F5F4F0" data-accent="#E7E2CE"><span class="pastille" style="background:#112250"></span>Marine &amp; champagne</button>
-      <button type="button" class="amb" data-nom="Bordeaux et or" data-fond="#4a1424" data-texte="#FBF3EA" data-accent="#E3B873"><span class="pastille" style="background:#4a1424"></span>Bordeaux &amp; or</button>
-      <button type="button" class="amb" data-nom="Émeraude et ivoire" data-fond="#0f3b33" data-texte="#F5F4F0" data-accent="#D9CFA6"><span class="pastille" style="background:#0f3b33"></span>Émeraude &amp; ivoire</button>
-      <button type="button" class="amb" data-nom="Ivoire et saphir" data-fond="#F5F4F0" data-texte="#112250" data-accent="#3B507D"><span class="pastille" style="background:#F5F4F0"></span>Ivoire &amp; saphir</button>
-    </div>
-    <label class="champ" for="dress">Code vestimentaire <span class="fac">(facultatif)</span></label>
-    <input id="dress" type="text" placeholder="ex. Tenue de soirée, touche de bleu">
-  </section>
-
-  <!-- Étape 4 -->
-  <section class="etape">
-    <h1>Vos invités</h1>
-    <p class="aide">Collez votre liste : <strong>un nom par ligne</strong>. Vous pouvez ajouter la table ou « +1 » après le nom (ex. <em>Papa Jean, table 3</em>).</p>
-    <textarea id="invites" placeholder="Maman Grâce&#10;Tonton Patrick, table 2&#10;Sarah +1&#10;Famille Mbuyi"></textarea>
-    <p class="compte">Invités : <span id="nb">0</span></p>
-    <label class="champ" for="rsvp">Répondre avant le <span class="fac">(facultatif)</span></label>
-    <input id="rsvp" type="date">
-  </section>
-
-  <!-- Étape 5 -->
-  <section class="etape">
-    <h1>Dernière étape</h1>
-    <p class="aide">Comment vous joindre pour vous envoyer le lien de votre invitation ?</p>
-    <label class="champ" for="nom">Votre nom</label>
-    <input id="nom" type="text" placeholder="ex. Jean Mukendi">
-    <label class="champ" for="contact">Votre numéro WhatsApp</label>
-    <input id="contact" type="tel" inputmode="tel" placeholder="ex. +243 812 345 678">
-    <p class="note">En touchant « Envoyer », WhatsApp s’ouvre avec votre message déjà prêt.</p>
+  /* Choix par boutons radio */
+  .choix { display: grid; gap: 10px; }
+  .choix.deux-col { grid-template-columns: 1fr 1fr; }
+  .choix label { display: block; cursor: pointer; margin: 0; }
+  .choix input { position: absolute; opacity: 0; pointer-events: none; }
+  .choix .carte { display: flex; align-items: center; justify-content: center; gap: 12px; text-align: center;
+    border: 1px solid var(--taupe); background: #fff;
