@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Invitation de mariage</title>
+<style>
+  :root {
+    --fond: #112250;
+    --texte: #F5F4F0;
+    --or: #FCA311;
+    --doux: #BEB7A7;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--fond);
+    color: var(--texte);
+    font-family: Georgia, "Times New Roman", serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    text-align: center;
+  }
+  .carte {
+    width: 100%;
+    max-width: 420px;
+    border: 1px solid var(--or);
+    border-radius: 4px;
+    padding: 40px 24px;
+    outline: 1px solid rgba(252,163,17,.35);
+    outline-offset: 6px;
+  }
+  .intro { color: var(--doux); font-style: italic; margin: 0 0 20px; }
+  h1 { font-size: 2.6rem; font-weight: 400; line-height: 1.15; margin: 0; color: var(--or); }
+  .et { font-style: italic; color: var(--doux); margin: 6px 0; font-size: 1.3rem; }
+  .infos { margin: 32px 0; line-height: 1.7; font-size: 1.1rem; }
+  .infos strong { color: var(--or); font-weight: 400; }
+  a.carte-lien { display: block; margin-top: 14px; color: var(--or); text-decoration: underline; }
+  label { display: block; text-align: left; color: var(--doux); margin-bottom: 6px; }
+  input {
+    width: 100%; font: inherit; font-size: 1.05rem; padding: 12px;
+    border-radius: 4px; border: 1px solid var(--doux);
+    background: transparent; color: var(--texte); margin-bottom: 16px;
+  }
+  input:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+  .boutons { display: flex; flex-direction: column; gap: 12px; }
+  button {
+    font: inherit; font-size: 1.05rem; padding: 14px; border-radius: 4px;
+    border: 1px solid var(--or); cursor: pointer; color: var(--texte); background: transparent;
+  }
+  button.oui { background: var(--or); color: var(--fond); }
+  button:disabled { opacity: .6; cursor: wait; }
+  button:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+  #message { min-height: 3em; margin: 24px 0 0; color: var(--or); font-size: 1.1rem; }
+</style>
+</head>
+<body>
+  <main class="carte">
+    <p class="intro">Nous avons la joie de vous inviter au mariage de</p>
+    <h1>Esther</h1>
+    <p class="et">et</p>
+    <h1>Joël</h1>
+
+    <div class="infos">
+      <p><strong>Samedi 20 décembre 2026</strong><br>à 14h00</p>
+      <p><strong>Salle Le Prestige</strong><br>Gombe, Kinshasa</p>
+      <a class="carte-lien" href="https://www.google.com/maps/search/?api=1&query=Gombe+Kinshasa" target="_blank" rel="noopener">Voir l’itinéraire sur Google Maps</a>
+    </div>
+
+    <label for="nom">Votre nom</label>
+    <input id="nom" type="text" maxlength="80" autocomplete="name" placeholder="Ex : Marie Mbuyi">
+
+    <div class="boutons">
+      <button class="oui" id="btn-oui">Je viens</button>
+      <button id="btn-non">Je ne viens pas</button>
+    </div>
+    <p id="message" aria-live="polite"></p>
+  </main>
+
+  <script>
+    // Adresse et clé publique de ton projet Supabase
+    const SUPABASE_URL = "https://buocoulyutlxgmisxdxl.supabase.co";
+    const SUPABASE_CLE = "sb_publishable_s9y0BEltHifWUDUm8i9j3g_7zBgC9As";
+
+    const message = document.getElementById("message");
+    const champNom = document.getElementById("nom");
+    const boutons = document.querySelectorAll("button");
+
+    async function repondre(reponse) {
+      const nom = champNom.value.trim();
+      if (nom.length < 2) {
+        message.textContent = "Merci d’écrire votre nom d’abord.";
+        champNom.focus();
+        return;
+      }
+
+      boutons.forEach(function (b) { b.disabled = true; });
+      message.textContent = "Envoi en cours…";
+
+      try {
+        const res = await fetch(SUPABASE_URL + "/rest/v1/rsvp", {
+          method: "POST",
+          headers: {
+            "apikey": SUPABASE_CLE,
+            "Content-Type": "application/json",
+            "Prefer": "return=minimal"
+          },
+          body: JSON.stringify({ nom: nom, reponse: reponse })
+        });
+
+        if (!res.ok) { throw new Error("Erreur " + res.status); }
+
+        message.textContent = reponse === "oui"
+          ? "Merci " + nom + " ! Votre présence est confirmée."
+          : "Merci de nous avoir prévenus, " + nom + ". Vous nous manquerez.";
+      } catch (e) {
+        message.textContent = "Oups, l’envoi n’a pas marché. Réessayez dans un instant.";
+        boutons.forEach(function (b) { b.disabled = false; });
+      }
+    }
+
+    document.getElementById("btn-oui").addEventListener("click", function () { repondre("oui"); });
+    document.getElementById("btn-non").addEventListener("click", function () { repondre("non"); });
+  </script>
+</body>
+</html>
