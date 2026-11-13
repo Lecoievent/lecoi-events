@@ -6,191 +6,21 @@
 <title>LECOI EVENTS · Invitations numériques à Kinshasa</title>
 <meta name="description" content="Créez vos invitations numériques, recevez les confirmations et contrôlez les entrées avec des QR codes. Depuis Kinshasa.">
 <style>
-   :root {
-    --fond: #112250;
-    --fond2: #14213D;
-    --texte: #F5F4F0;
-    --or: #FCA311;
-    --doux: #BEB7A7;
-    --trait: #3B507D;
-  }
+  :root { --fond:#112250; --fond2:#14213D; --texte:#F5F4F0; --or:#FCA311; --doux:#BEB7A7; --trait:#3B507D; }
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
   html, body { margin: 0; }
-  body {
-    background: var(--fond);
-    color: var(--texte);
-    font-family: Georgia, "Times New Roman", serif;
-    line-height: 1.6;
-  }
+  body { background: var(--fond); color: var(--texte); font-family: Georgia, "Times New Roman", serif; line-height: 1.6; }
   .conteneur { max-width: 960px; margin: 0 auto; padding: 0 20px; }
   a { color: inherit; }
   a:focus-visible, button:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
-
-  /* Barre du haut */
   .barre { border-bottom: 1px solid var(--trait); }
   .barre .conteneur { display: flex; align-items: center; justify-content: space-between; height: 60px; }
   .logo { color: var(--or); letter-spacing: .2em; font-size: .95rem; text-decoration: none; }
-  .menu a { margin-left: 16px; text-decoration: none; color: var(--doux); font-size: .95rem; }
   .menu { display: none; }
+  .menu a { margin-left: 16px; text-decoration: none; color: var(--doux); font-size: .95rem; }
   @media (min-width: 700px) { .menu { display: block; } }
-
-  /* Boutons */
-  .btn {
-    display: inline-block; padding: 13px 22px; border-radius: 4px;
-    text-decoration: none; font-size: 1rem; border: 1px solid var(--or);
-  }
+  .btn { display: inline-block; padding: 13px 22px; border-radius: 4px; text-decoration: none; font-size: 1rem; border: 1px solid var(--or); }
   .btn-plein { background: var(--or); color: var(--fond); }
   .btn-vide { color: var(--or); }
   .actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
-
-  /* Haut de page */
-  .hero { text-align: center; padding: 56px 0 48px; }
-  .etiquette { color: var(--doux); font-style: italic; margin: 0 0 14px; }
-  h1 { font-size: clamp(2rem, 7vw, 3.2rem); font-weight: 400; line-height: 1.15; margin: 0 0 18px; color: var(--or); }
-  .hero p.texte { max-width: 560px; margin: 0 auto 28px; color: var(--doux); font-size: 1.1rem; }
-  .puces { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: center; margin-top: 28px; color: var(--doux); font-size: .95rem; }
-  .puces span::before { content: "✓ "; color: var(--or); }
-
-  /* Sections */
-  section { padding: 48px 0; border-top: 1px solid var(--trait); }
-  .sur { color: var(--doux); font-style: italic; text-align: center; margin: 0 0 6px; }
-  h2 { font-size: clamp(1.5rem, 5vw, 2.1rem); font-weight: 400; color: var(--or); text-align: center; margin: 0 0 12px; }
-  .intro { text-align: center; color: var(--doux); max-width: 560px; margin: 0 auto 32px; }
-  .grille { display: grid; gap: 16px; }
-  @media (min-width: 700px) { .grille.trois { grid-template-columns: repeat(3, 1fr); } .grille.deux { grid-template-columns: 1fr 1fr; } }
-  .bloc { background: var(--fond2); border: 1px solid var(--trait); border-radius: 4px; padding: 22px; }
-  .bloc h3 { font-weight: 400; color: var(--or); font-size: 1.2rem; margin: 0 0 8px; }
-  .bloc p { margin: 0; color: var(--doux); }
-  .num { width: 36px; height: 36px; border: 1px solid var(--or); border-radius: 50%; color: var(--or); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
-
-  /* Avant / Avec LECOI */
-  .ligne { display: grid; gap: 6px; padding: 14px 0; border-bottom: 1px solid var(--trait); }
-  .ligne:last-child { border-bottom: 0; }
-  .avant { color: var(--doux); text-decoration: line-through; text-decoration-color: rgba(201,184,216,.5); }
-  .avant::before { content: "✕ "; color: #e58a8a; text-decoration: none; display: inline-block; }
-  .apres::before { content: "✓ "; color: var(--or); }
-
-  /* Modèles */
-  .modele { background: var(--fond2); border: 1px solid var(--trait); border-radius: 4px; overflow: hidden; text-decoration: none; display: block; }
-  .apercu { height: 150px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; }
-  .modele .info { padding: 14px 18px; }
-  .modele .info strong { color: var(--or); font-weight: 400; display: block; }
-  .modele .info span { color: var(--doux); font-size: .9rem; }
-  .modele.bientot { opacity: .65; }
-
-  /* Appel final */
-  .final { text-align: center; }
-  .final p { color: var(--doux); max-width: 520px; margin: 0 auto 24px; }
-
-  /* Pied de page */
-  footer { border-top: 1px solid var(--trait); padding: 32px 0 40px; text-align: center; color: var(--doux); font-size: .95rem; }
-  footer .logo { display: inline-block; margin-bottom: 8px; }
-</style>
-</head>
-<body>
-
-<header class="barre">
-  <div class="conteneur">
-    <a class="logo" href="#haut">LECOI EVENTS</a>
-    <nav class="menu">
-      <a href="#etapes">Comment ça marche</a>
-      <a href="#modeles">Modèles</a>
-      <a href="#contact">Contact</a>
-    </nav>
-    <a class="btn btn-vide" style="padding:8px 14px;font-size:.9rem" href="https://wa.me/243000000000" target="_blank" rel="noopener">WhatsApp</a>
-  </div>
-</header>
-
-<main id="haut">
-
-  <!-- 1. Haut de page -->
-  <div class="conteneur hero">
-    <p class="etiquette">100% numérique · Sans papier · Pensé pour Kinshasa</p>
-    <h1>Vos invitations, vos invités, votre événement. Au même endroit.</h1>
-    <p class="texte">Envoyez de belles invitations par WhatsApp, recevez les confirmations de vos invités et contrôlez les entrées avec un QR code. Plus besoin de relancer tout le monde un par un.</p>
-    <div class="actions">
-      <a class="btn btn-plein" href="https://wa.me/243000000000?text=Bonjour%20LECOI%20EVENTS%2C%20je%20veux%20cr%C3%A9er%20mon%20invitation" target="_blank" rel="noopener">Créer mon invitation</a>
-      <a class="btn btn-vide" href="invitation.html">Voir un exemple</a>
-    </div>
-    <div class="puces">
-      <span>Invitations WhatsApp</span>
-      <span>Confirmations en un clic</span>
-      <span>QR code par invité</span>
-    </div>
-  </div>
-
-  <!-- 2. Les étapes -->
-  <section id="etapes">
-    <div class="conteneur">
-      <p class="sur">Le processus</p>
-      <h2>Comment ça marche</h2>
-      <p class="intro">De la création de l’événement jusqu’à l’entrée de vos invités, tout se fait en 3 étapes.</p>
-      <div class="grille trois">
-        <div class="bloc"><div class="num">1</div><h3>Créez votre événement</h3><p>Mariage, dot, anniversaire ou fête d’église : choisissez un modèle et indiquez la date et le lieu.</p></div>
-        <div class="bloc"><div class="num">2</div><h3>Envoyez les invitations</h3><p>Chaque invité reçoit son lien par WhatsApp, SMS ou e-mail et confirme sa présence en un clic.</p></div>
-        <div class="bloc"><div class="num">3</div><h3>Contrôlez à l’entrée</h3><p>Le QR code de l’invité est scanné à la porte, et il est marqué présent tout de suite.</p></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 3. Les problèmes -->
-  <section>
-    <div class="conteneur" style="max-width:700px">
-      <p class="sur">Pourquoi changer</p>
-      <h2>Fini les tracas</h2>
-      <p class="intro">Ce qui fatigue les organisateurs, et comment on le règle.</p>
-      <div class="ligne"><span class="avant">Cartes imprimées chères et livrées à la main</span><span class="apres">Un lien à envoyer, sans frais d’impression</span></div>
-      <div class="ligne"><span class="avant">Invités qui ne répondent pas</span><span class="apres">Une confirmation en un clic depuis leur téléphone</span></div>
-      <div class="ligne"><span class="avant">Liste d’invités dans un carnet ou dans WhatsApp</span><span class="apres">Un tableau clair : qui vient, qui a refusé, qui n’a pas répondu</span></div>
-      <div class="ligne"><span class="avant">Entrée lente et désorganisée le jour J</span><span class="apres">Un scan de QR code en quelques secondes</span></div>
-    </div>
-  </section>
-
-  <!-- 4. Modèles -->
-  <section id="modeles">
-    <div class="conteneur">
-      <p class="sur">Nos modèles</p>
-      <h2>Choisissez votre style</h2>
-      <p class="intro">Un premier modèle est disponible, d’autres arrivent bientôt.</p>
-      <div class="grille trois">
-        <a class="modele" href="invitation.html">
-          <div class="apercu" style="background:#2a1740;color:#e6c48f;border-bottom:1px solid var(--trait)">Esther &amp; Joël</div>
-          <div class="info"><strong>Prestige</strong><span>Mariage · Disponible, touchez pour voir</span></div>
-        </a>
-        <div class="modele bientot">
-          <div class="apercu" style="background:#1f3a34;color:#e6d9b8">Anniversaire</div>
-          <div class="info"><strong>Émeraude</strong><span>Anniversaire · Bientôt</span></div>
-        </div>
-        <div class="modele bientot">
-          <div class="apercu" style="background:#f1e6e0;color:#5a2a3a">Conférence</div>
-          <div class="info"><strong>Rose poudré</strong><span>Dot &amp; cérémonie · Bientôt</span></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 5. Appel final -->
-  <section id="contact" class="final">
-    <div class="conteneur">
-      <h2>Prêt à organiser votre événement ?</h2>
-      <p>Écrivez-nous sur WhatsApp : on vous accompagne à chaque étape, et vous voyez votre invitation avant de l’envoyer.</p>
-      <div class="actions">
-        <a class="btn btn-plein" href="https://wa.me/243000000000?text=Bonjour%20LECOI%20EVENTS%2C%20je%20veux%20cr%C3%A9er%20mon%20invitation" target="_blank" rel="noopener">Nous écrire sur WhatsApp</a>
-        <a class="btn btn-vide" href="invitation.html">Voir un exemple</a>
-      </div>
-    </div>
-  </section>
-
-</main>
-
-<footer>
-  <div class="conteneur">
-    <a class="logo" href="#haut">LECOI EVENTS</a>
-    <div>Vos événements, notre priorité !</div>
-    <div style="margin-top:8px">Kinshasa, RDC</div>
-  </div>
-</footer>
-
-</body>
-</html>
