@@ -49,13 +49,28 @@
 
   .compte { color: var(--saphir); margin: 6px 0 0; }
   button.envoyer { width: 100%; margin-top: 32px; font: inherit; font-size: 1.1rem; padding: 16px; border: 0; border-radius: 4px; background: var(--texte); color: var(--fond); cursor: pointer; }
+  button.envoyer:disabled { opacity: .6; cursor: wait; }
   #erreur { color: var(--erreur); margin-top: 14px; min-height: 1.4em; font-weight: bold; }
   .note { color: var(--saphir); font-size: .9rem; text-align: center; margin-top: 12px; }
+
+  #merci { display: none; text-align: center; padding: 48px 0; }
+  #merci h1 { margin-bottom: 12px; }
+  #merci .lien { display: inline-block; margin: 8px 6px; padding: 14px 22px; border-radius: 4px; text-decoration: none; border: 1px solid var(--texte); color: var(--texte); }
+  #merci .lien.plein { background: var(--texte); color: var(--fond); }
   :focus-visible { outline: 3px solid var(--saphir); outline-offset: 2px; }
 </style>
 </head>
 <body>
 <main>
+
+  <div id="merci" role="status">
+    <h1>Merci, c’est enregistré ! 🎉</h1>
+    <p class="aide">Votre demande est bien arrivée chez LECOI EVENTS. Nous vous contacterons sur votre WhatsApp pour vous envoyer votre invitation.</p>
+    <a class="lien plein" href="index.html">Retour à l’accueil</a>
+    <a class="lien" href="creer.html">Créer un autre événement</a>
+  </div>
+
+  <div id="formulaire">
   <a class="retour" href="index.html">← Retour</a>
   <h1>Créer mon invitation</h1>
   <p class="aide">Toutes les informations sont nécessaires (<span class="etoile">*</span>) pour préparer votre invitation. Elle se dessine en direct ci-dessous.</p>
@@ -120,4 +135,154 @@
 
   <h2>3. L’ambiance <span class="etoile">*</span></h2>
   <div class="choix liste">
-    <label><input type="radio" name="amb" value="Marine et champagne" data-fond="#112250" data-texte="#F5F4F0" data-accent="#E7E2CE" checked><span class="carte"><span class="pastille"
+    <label><input type="radio" name="amb" value="Marine et champagne" data-fond="#112250" data-texte="#F5F4F0" data-accent="#E7E2CE" checked><span class="carte"><span class="pastille" style="background:#112250"></span>Marine &amp; champagne</span></label>
+    <label><input type="radio" name="amb" value="Bordeaux et or" data-fond="#4a1424" data-texte="#FBF3EA" data-accent="#E3B873"><span class="carte"><span class="pastille" style="background:#4a1424"></span>Bordeaux &amp; or</span></label>
+    <label><input type="radio" name="amb" value="Émeraude et ivoire" data-fond="#0f3b33" data-texte="#F5F4F0" data-accent="#D9CFA6"><span class="carte"><span class="pastille" style="background:#0f3b33"></span>Émeraude &amp; ivoire</span></label>
+    <label><input type="radio" name="amb" value="Ivoire et saphir" data-fond="#FFFFFF" data-texte="#112250" data-accent="#3B507D"><span class="carte"><span class="pastille" style="background:#fff"></span>Ivoire &amp; saphir</span></label>
+  </div>
+
+  <h2>4. Vos invités</h2>
+  <label class="champ" for="invites">Liste des invités <span class="etoile">*</span>
+    <span class="indice">Un nom par ligne. Vous pouvez ajouter la table ou « +1 », ex. « Papa Jean, table 3 »</span></label>
+  <textarea id="invites" placeholder="Maman Grâce&#10;Tonton Patrick, table 2&#10;Sarah +1&#10;Famille Mbuyi" data-nom="la liste des invités"></textarea>
+  <p class="compte">Invités : <strong id="nb">0</strong></p>
+  <div class="msg" data-pour="invites"></div>
+
+  <h2>5. Pour vous joindre</h2>
+  <label class="champ" for="nom">Votre nom <span class="etoile">*</span></label>
+  <input id="nom" type="text" placeholder="ex. Jean Mukendi" data-nom="votre nom">
+  <div class="msg" data-pour="nom"></div>
+
+  <label class="champ" for="contact">Votre numéro WhatsApp <span class="etoile">*</span></label>
+  <input id="contact" type="tel" inputmode="tel" placeholder="ex. +243 812 345 678" data-nom="votre numéro WhatsApp">
+  <div class="msg" data-pour="contact"></div>
+
+  <div id="erreur" role="alert"></div>
+  <button type="button" class="envoyer" id="envoyer">Envoyer ma demande</button>
+  <p class="note">Votre demande est enregistrée sur notre plateforme.</p>
+  </div>
+</main>
+
+<script>
+  // Connexion à Supabase (l'adresse + la clé PUBLIQUE, faite pour être visible dans un site)
+  const SUPABASE_URL = "https://buocoulyutlxgmisxdxl.supabase.co";
+  const SUPABASE_CLE = "sb_publishable_s9y0BEltHifWUDUm8i9j3g_7zBgC9As";
+
+  const $ = function (id) { return document.getElementById(id); };
+  const val = function (id) { return $(id).value.trim(); };
+  const choisi = function (nom) { return document.querySelector('input[name="' + nom + '"]:checked'); };
+
+  const CHAMPS = ["titre", "date", "heure", "lieu", "adresse", "dress", "programme", "rsvp", "invites", "nom", "contact"];
+
+  function dateFr(d) {
+    if (!d) return "";
+    return new Date(d + "T12:00:00").toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+  }
+
+  function majApercu() {
+    $("p-type").textContent = choisi("type").value;
+    $("p-titre").textContent = val("titre") || "Le titre de votre événement";
+    const d = dateFr(val("date"));
+    const h = val("heure");
+    $("p-date").textContent = d ? (d + (h ? " à " + h : "")) : "Date et heure";
+    $("p-lieu").textContent = val("lieu") || "Lieu";
+    $("p-dress").textContent = val("dress") ? "Tenue : " + val("dress") : "";
+    const a = choisi("amb");
+    const carte = $("apercu");
+    carte.style.setProperty("--a-fond", a.dataset.fond);
+    carte.style.setProperty("--a-texte", a.dataset.texte);
+    carte.style.setProperty("--a-accent", a.dataset.accent);
+  }
+
+  function listeInvites() {
+    return $("invites").value.split(/\r?\n/).map(function (x) { return x.trim(); }).filter(Boolean);
+  }
+
+  function message(id, texte) {
+    document.querySelector('.msg[data-pour="' + id + '"]').textContent = texte;
+    $(id).classList.toggle("invalide", texte !== "");
+  }
+
+  function verifier(id) {
+    const v = val(id);
+    if (!v) return "Merci d’indiquer " + $(id).dataset.nom + ".";
+    if (id === "date" && v < new Date().toISOString().slice(0, 10)) return "La date ne peut pas être dans le passé.";
+    if (id === "rsvp" && val("date") && v > val("date")) return "La date limite doit être avant l’événement.";
+    if (id === "contact" && v.replace(/\D/g, "").length < 9) return "Numéro trop court. Ajoutez le code du pays.";
+    return "";
+  }
+
+  CHAMPS.forEach(function (id) {
+    $(id).addEventListener("input", function () {
+      majApercu();
+      if ($(id).classList.contains("invalide")) message(id, verifier(id));
+    });
+  });
+  $("invites").addEventListener("input", function () { $("nb").textContent = listeInvites().length; });
+  document.querySelectorAll('input[type="radio"]').forEach(function (r) { r.addEventListener("change", majApercu); });
+
+  $("envoyer").addEventListener("click", async function () {
+    let premier = null;
+    CHAMPS.forEach(function (id) {
+      const e = verifier(id);
+      message(id, e);
+      if (e && !premier) premier = id;
+    });
+    if (premier) {
+      $("erreur").textContent = "Il manque des informations, vérifiez les champs en rouge.";
+      $(premier).scrollIntoView({ behavior: "smooth", block: "center" });
+      $(premier).focus({ preventScroll: true });
+      return;
+    }
+    $("erreur").textContent = "";
+
+    const donnees = {
+      type: choisi("type").value,
+      titre: val("titre"),
+      date_evenement: val("date"),
+      heure: val("heure"),
+      lieu: val("lieu"),
+      adresse: val("adresse"),
+      tenue: val("dress"),
+      programme: val("programme"),
+      date_limite_rsvp: val("rsvp"),
+      ambiance: choisi("amb").value,
+      invites: listeInvites(),
+      nom_organisateur: val("nom"),
+      whatsapp: val("contact")
+    };
+
+    const bouton = $("envoyer");
+    bouton.disabled = true;
+    bouton.textContent = "Envoi en cours…";
+
+    try {
+      const reponse = await fetch(SUPABASE_URL + "/rest/v1/evenements", {
+        method: "POST",
+        headers: {
+          "apikey": SUPABASE_CLE,
+          "Authorization": "Bearer " + SUPABASE_CLE,
+          "Content-Type": "application/json",
+          "Prefer": "return=minimal"
+        },
+        body: JSON.stringify(donnees)
+      });
+      if (!reponse.ok) {
+        const detail = await reponse.text();
+        console.error("Erreur Supabase :", reponse.status, detail);
+        throw new Error("echec");
+      }
+      $("formulaire").style.display = "none";
+      $("merci").style.display = "block";
+      window.scrollTo(0, 0);
+    } catch (e) {
+      $("erreur").textContent = "L’envoi a échoué. Vérifiez votre connexion et réessayez.";
+      bouton.disabled = false;
+      bouton.textContent = "Envoyer ma demande";
+    }
+  });
+
+  majApercu();
+</script>
+</body>
+</html>
